@@ -1,0 +1,30 @@
+{
+  "name": "bookshelf-pagination",
+  "version": "1.0.0",
+  "description": "Bookshelf pagination ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sedinson/bookshelf-pagination.git"
+  },
+  "keywords": [
+    "bookshelf",
+    "model",
+    "pagination"
+  ],
+  "author": "Edinson Salas <edinsonsalas@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sedinson/bookshelf-pagination/issues"
+  },
+  "homepage": "https://github.com/sedinson/bookshelf-pagination#readme",
+  "dependencies": {
+    "async": "^2.6.2",
+    "extend": "^3.0.2",
+    "lodash": "^4.17.11",
+    "string": "^3.3.3"
+  }
+}
