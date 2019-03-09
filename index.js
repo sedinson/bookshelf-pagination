@@ -36,6 +36,7 @@ module.exports = function (config) {
             options = {
                 page: 1,
                 limit: config.defaults.pageSize,
+                conditional: 'orWhere',
                 columns: '*',
                 query: {
                     fields: [],
@@ -91,6 +92,11 @@ module.exports = function (config) {
             options.related = related || [];
             return self;
         };
+
+        self.conditional = function (conditional) {
+            options.conditional = conditional || 'orWhere';
+            return self;
+        };
     
         self.fetchAll = function (callback) {
             async.waterfall([
@@ -98,16 +104,16 @@ module.exports = function (config) {
                 function (cb) {
                     Model.query(function (qb) {
                         options.where && qb.where(options.where);
-    
+
                         options.query.value != '' && qb.where(function (qb) {
                             _.each(get_fields(options.query.fields), function (param) {
-                                qb.orWhere(
+                                qb[options.conditional](
                                     param, config.query.search[0], S(config.query.search[1]).template({
                                         search: options.query.value
                                     }).s
                                 );
                             });
-    
+
                             _.each(options.related, function (related) {
                                 var fields = get_fields(options.query.fields[related]);
                                 if(fields.length > 0) {
@@ -115,7 +121,7 @@ module.exports = function (config) {
                                         related + '_id', function () {
                                             this.select('id').from(related).where(function (qb) {
                                                 _.each(fields, function (param) {
-                                                    qb.orWhere(
+                                                    qb[options.conditional](
                                                         param, config.query.search[0], S(config.query.search[1]).template({
                                                             search: options.query.value
                                                         }).s
@@ -127,13 +133,13 @@ module.exports = function (config) {
                                 }
                             });
                         });
-    
+
                         _.each(options.filters, function (values, field) {
                             if(Array.isArray(values)) {
                                 qb.where(function (qb) {
                                     _.each(values, function (value) {
                                         if(value) {
-                                            qb.orWhere(field, value[0], value[1]);
+                                            qb[options.conditional](field, value[0], value[1]);
                                         }
                                     });
                                 });
@@ -146,7 +152,7 @@ module.exports = function (config) {
                                                 qb.where(function (qb) {
                                                     _.each(values, function (value) {
                                                         if(value) {
-                                                            qb.orWhere(table + '.' + field, value[0], value[1]);
+                                                            qb[options.conditional](table + '.' + field, value[0], value[1]);
                                                         }
                                                     });
                                                 });
@@ -156,9 +162,13 @@ module.exports = function (config) {
                                 );
                             }
                         });
-    
+
                         options.orWhere && qb.orWhere(options.orWhere);
                     }).count().then(function (count) {
+                        if(options.limit < 0) {
+                            options.limit = count;
+                        }
+
                         cb(null, {
                             sort: options.sort,
                             filters: options.filters,
@@ -172,7 +182,7 @@ module.exports = function (config) {
                         });
                     }).catch(cb);
                 },
-                
+            
                 //-- Retrieve event
                 function (data, cb) {
                     Model.query(function (qb) {
@@ -182,7 +192,7 @@ module.exports = function (config) {
     
                         options.query.value != '' && qb.where(function (qb) {
                             _.each(get_fields(options.query.fields), function (param) {
-                                qb.orWhere(
+                                qb[options.conditional](
                                     param, config.query.search[0], S(config.query.search[1]).template({
                                         search: options.query.value
                                     }).s
@@ -196,7 +206,7 @@ module.exports = function (config) {
                                         related + '_id', function () {
                                             this.select('id').from(related).where(function (qb) {
                                                 _.each(fields, function (param) {
-                                                    qb.orWhere(
+                                                    qb[options.conditional](
                                                         param, config.query.search[0], S(config.query.search[1]).template({
                                                             search: options.query.value
                                                         }).s
@@ -214,7 +224,7 @@ module.exports = function (config) {
                                 qb.where(function (qb) {
                                     _.each(values, function (value) {
                                         if(value) {
-                                            qb.orWhere(field, value[0], value[1]);
+                                            qb[options.conditional](field, value[0], value[1]);
                                         }
                                     });
                                 });
@@ -227,7 +237,7 @@ module.exports = function (config) {
                                                 qb.where(function (qb) {
                                                     _.each(values, function (value) {
                                                         if(value) {
-                                                            qb.orWhere(table + '.' + field, value[0], value[1]);
+                                                            qb[options.conditional](table + '.' + field, value[0], value[1]);
                                                         }
                                                     });
                                                 });
