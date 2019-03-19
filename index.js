@@ -107,6 +107,10 @@ module.exports = function (config) {
         self.fetchAll = function (callback) {
             async.waterfall([
                 function (cb) {
+                    if(!normalize) {
+                        return cb();
+                    }
+                    
                     normalize(
                         Model.prototype.tableName, options.filters
                     ).then(function (filters) {
