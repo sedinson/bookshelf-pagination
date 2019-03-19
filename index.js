@@ -110,6 +110,10 @@ module.exports = function (config) {
                     normalize(
                         Model.prototype.tableName, options.filters
                     ).then(function (filters) {
+                        for(var name in filters) {
+                            filters[name] = JSON.parse(filters[name]);
+                        }
+                        
                         options.filters = filters;
                         
                         cb();
