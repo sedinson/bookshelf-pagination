@@ -23,6 +23,12 @@ var get_fields = function (object) {
 };
 
 module.exports = function (config) {
+    var normalize = null;
+    
+    if(config.knex) {
+        normalize = require('restify-normalize')(config.knex);
+    }
+
     config = extend(true, {
         defaults: {
             pageSize: 20
@@ -100,6 +106,16 @@ module.exports = function (config) {
     
         self.fetchAll = function (callback) {
             async.waterfall([
+                function (cb) {
+                    normalize(
+                        Model.prototype.tableName, options.filters
+                    ).then(function (filters) {
+                        options.filters = filters;
+                        
+                        cb();
+                    }).catch(cb);
+                },
+
                 //-- Count event
                 function (cb) {
                     Model.query(function (qb) {
