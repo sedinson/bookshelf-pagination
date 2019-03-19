@@ -25,7 +25,7 @@ var get_fields = function (object) {
 module.exports = function (config) {
     var normalize = null;
     
-    if(config.knex) {
+    if((config || {}).knex) {
         normalize = require('restify-normalize')(config.knex);
     }
 
@@ -113,7 +113,7 @@ module.exports = function (config) {
                         for(var name in filters) {
                             filters[name] = JSON.parse(filters[name]);
                         }
-                        
+
                         options.filters = filters;
                         
                         cb();
