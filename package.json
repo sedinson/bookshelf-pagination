@@ -1,6 +1,6 @@
 {
   "name": "bookshelf-pagination",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "Bookshelf pagination ",
   "main": "index.js",
   "scripts": {
