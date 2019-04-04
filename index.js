@@ -163,7 +163,11 @@ module.exports = function (config) {
                                 qb.where(function (qb) {
                                     _.each(values, function (value) {
                                         if(value) {
-                                            qb[options.conditional](field, value[0], value[1]);
+                                            if(value[0] == '$') {
+                                                qb[`${options.conditional}${value[1] == 'null'? 'Null' : 'NotNull'}`](field);
+                                            } else {
+                                                qb[options.conditional](field, value[0], value[1]);
+                                            }
                                         }
                                     });
                                 });
@@ -176,7 +180,11 @@ module.exports = function (config) {
                                                 qb.where(function (qb) {
                                                     _.each(values, function (value) {
                                                         if(value) {
-                                                            qb[options.conditional](table + '.' + field, value[0], value[1]);
+                                                            if(value[0] == '$') {
+                                                                qb[`${options.conditional}${value[1] == 'null'? 'Null' : 'NotNull'}`](`${table}.${field}`);
+                                                            } else {
+                                                                qb[options.conditional](`${table}.${field}`, value[0], value[1]);
+                                                            }
                                                         }
                                                     });
                                                 });
@@ -248,7 +256,11 @@ module.exports = function (config) {
                                 qb.where(function (qb) {
                                     _.each(values, function (value) {
                                         if(value) {
-                                            qb[options.conditional](field, value[0], value[1]);
+                                            if(value[0] == '$') {
+                                                qb[`${options.conditional}${value[1] == 'null'? 'Null' : 'NotNull'}`](field);
+                                            } else {
+                                                qb[options.conditional](field, value[0], value[1]);
+                                            }
                                         }
                                     });
                                 });
@@ -261,7 +273,11 @@ module.exports = function (config) {
                                                 qb.where(function (qb) {
                                                     _.each(values, function (value) {
                                                         if(value) {
-                                                            qb[options.conditional](table + '.' + field, value[0], value[1]);
+                                                            if(value[0] == '$') {
+                                                                qb[`${options.conditional}${value[1] == 'null'? 'Null' : 'NotNull'}`](`${table}.${field}`);
+                                                            } else {
+                                                                qb[options.conditional](`${table}.${field}`, value[0], value[1]);
+                                                            }
                                                         }
                                                     });
                                                 });
