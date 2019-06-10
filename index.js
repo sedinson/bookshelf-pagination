@@ -118,6 +118,12 @@ module.exports = function (config) {
                             filters[name] = JSON.parse(filters[name]);
                         }
 
+                        for(var name in options.filters) {
+                            if(!Array.isArray(options.filters[name])) {
+                                filters[name] = options.filters[name];
+                            }
+                        }
+
                         options.filters = filters;
                         
                         cb();
